@@ -580,6 +580,12 @@ export function Control() {
           <Row label="Compass">
             <Toggle value={cfg.compass} onChange={(v) => set({ compass: v })} />
           </Row>
+          {cfg.compass && (
+            <Row label="Compass label size" hint="N, E, S, W" indent={true}>
+              <Slider id="compassLabelSizePx" value={cfg.compassLabelSizePx} min={6} max={40} step={1} unit="px"
+                onChange={(v) => set({ compassLabelSizePx: v })} />
+            </Row>
+          )}
           <Row label="Airport runways" hint="SFO geometry; off if you've moved">
             <Toggle value={cfg.showAirport} onChange={(v) => set({ showAirport: v })} />
           </Row>
@@ -589,7 +595,7 @@ export function Control() {
           <Row label="On-screen HUD (display)">
             <Toggle value={cfg.showHud} onChange={(v) => set({ showHud: v })} />
           </Row>
-          <Row label="Overlay label size" hint="compass, rings, airport, HUD">
+          <Row label="Overlay label size" hint="rings, airport, HUD">
             <Slider id="overlayLabelSizePx" value={cfg.overlayLabelSizePx} min={6} max={28} step={1} unit="px"
               onChange={(v) => set({ overlayLabelSizePx: v })} />
           </Row>

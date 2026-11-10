@@ -437,7 +437,9 @@ export interface Config {
   aircraftLabelSubPx: number;
   /** Font size for star, planet, and satellite labels, px. */
   skyLabelSizePx: number;
-  /** Font size for compass, range rings, airport code, and HUD overlays, px. */
+  /** Font size for compass cardinal labels (N, E, S, W), px. */
+  compassLabelSizePx: number;
+  /** Font size for range rings, airport code, and HUD overlays, px. */
   overlayLabelSizePx: number;
   /** Font size for the primary flight readout in the Focus theme detail panel, px. */
   focusTextSizePx: number;
@@ -558,6 +560,7 @@ export const DEFAULT_CONFIG: Config = {
   aircraftLabelTitlePx: 14,
   aircraftLabelSubPx: 11,
   skyLabelSizePx: 10,
+  compassLabelSizePx: 12,
   overlayLabelSizePx: 12,
   focusTextSizePx: 34,
   showFields: {

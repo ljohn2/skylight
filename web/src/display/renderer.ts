@@ -671,7 +671,7 @@ export class Renderer {
 
     if (cfg.compass) {
       ctx.save();
-      ctx.font = `300 ${cfg.overlayLabelSizePx}px ${cfg.fonts.label}`;
+      ctx.font = `300 ${cfg.compassLabelSizePx}px ${cfg.fonts.label}`;
       ctx.fillStyle = rgba(hexToRgb(cfg.palette.text), 0.32 * cfg.brightness);
       ctx.textAlign = "center";
       ctx.textBaseline = "middle";

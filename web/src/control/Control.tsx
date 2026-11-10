@@ -610,6 +610,12 @@ export function Control() {
           <Row label="Range rings">
             <Toggle value={cfg.rangeRings} onChange={(v) => set({ rangeRings: v })} />
           </Row>
+          {cfg.rangeRings && (
+            <Row label="Range ring label size" hint="elevation degree labels" indent={true}>
+              <Slider id="rangeRingLabelSizePx" value={cfg.rangeRingLabelSizePx} min={6} max={28} step={1} unit="px"
+                onChange={(v) => set({ rangeRingLabelSizePx: v })} />
+            </Row>
+          )}
           <Row label="Compass">
             <Toggle value={cfg.compass} onChange={(v) => set({ compass: v })} />
           </Row>
@@ -622,16 +628,24 @@ export function Control() {
           <Row label="Airport runways" hint="SFO geometry; off if you've moved">
             <Toggle value={cfg.showAirport} onChange={(v) => set({ showAirport: v })} />
           </Row>
+          {cfg.showAirport && (
+            <Row label="Airport label size" hint="airport code on runways" indent={true}>
+              <Slider id="airportLabelSizePx" value={cfg.airportLabelSizePx} min={6} max={40} step={1} unit="px"
+                onChange={(v) => set({ airportLabelSizePx: v })} />
+            </Row>
+          )}
           <Row label="Highlight emergency">
             <Toggle value={cfg.highlightEmergency} onChange={(v) => set({ highlightEmergency: v })} />
           </Row>
           <Row label="On-screen HUD (display)">
             <Toggle value={cfg.showHud} onChange={(v) => set({ showHud: v })} />
           </Row>
-          <Row label="Overlay label size" hint="rings, airport, HUD">
-            <Slider id="overlayLabelSizePx" value={cfg.overlayLabelSizePx} min={6} max={28} step={1} unit="px"
-              onChange={(v) => set({ overlayLabelSizePx: v })} />
-          </Row>
+          {cfg.showHud && (
+            <Row label="HUD text size" indent={true}>
+              <Slider id="hudTextSizePx" value={cfg.hudTextSizePx} min={8} max={28} step={1} unit="px"
+                onChange={(v) => set({ hudTextSizePx: v })} />
+            </Row>
+          )}
         </Section>
 
         <Section title="Sky">

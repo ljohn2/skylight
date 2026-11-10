@@ -640,8 +640,7 @@ export class Renderer {
           ctx.stroke();
         }
         ctx.setLineDash([]);
-        const ringFontPx = Math.max(6, Math.round(cfg.overlayLabelSizePx * 0.75));
-        ctx.font = `300 ${ringFontPx}px ${cfg.fonts.mono}`;
+        ctx.font = `300 ${cfg.rangeRingLabelSizePx}px ${cfg.fonts.mono}`;
         ctx.fillStyle = rgba(hexToRgb(cfg.palette.text), 0.22 * cfg.brightness);
         ctx.textAlign = "left";
         ctx.textBaseline = "middle";
@@ -743,9 +742,8 @@ export class Renderer {
       if (n) {
         cx /= n;
         cy /= n;
-        const apFontPx = Math.round(cfg.overlayLabelSizePx * (13 / 12));
         ctx.save();
-        ctx.font = `300 ${apFontPx}px ${cfg.fonts.label}`;
+        ctx.font = `300 ${cfg.airportLabelSizePx}px ${cfg.fonts.label}`;
         ctx.fillStyle = rgba(rwyRgb, 0.5 * cfg.brightness);
         ctx.textAlign = "center";
         ctx.textBaseline = "middle";

@@ -156,8 +156,10 @@ describe("mergeConfig label and text size controls", () => {
     expect(DEFAULT_CONFIG.aircraftLabelTitlePx).toBe(14);
     expect(DEFAULT_CONFIG.aircraftLabelSubPx).toBe(11);
     expect(DEFAULT_CONFIG.skyLabelSizePx).toBe(10);
+    expect(DEFAULT_CONFIG.rangeRingLabelSizePx).toBe(9);
     expect(DEFAULT_CONFIG.compassLabelSizePx).toBe(12);
-    expect(DEFAULT_CONFIG.overlayLabelSizePx).toBe(12);
+    expect(DEFAULT_CONFIG.airportLabelSizePx).toBe(13);
+    expect(DEFAULT_CONFIG.hudTextSizePx).toBe(12);
     expect(DEFAULT_CONFIG.focusTextSizePx).toBe(34);
     expect(DEFAULT_CONFIG.starSizeScale).toBe(1);
     expect(DEFAULT_CONFIG.constellationLineWidth).toBe(1);
@@ -167,8 +169,10 @@ describe("mergeConfig label and text size controls", () => {
       aircraftLabelTitlePx: 20,
       aircraftLabelSubPx: 14,
       skyLabelSizePx: 14,
+      rangeRingLabelSizePx: 12,
       compassLabelSizePx: 22,
-      overlayLabelSizePx: 16,
+      airportLabelSizePx: 18,
+      hudTextSizePx: 16,
       focusTextSizePx: 44,
       starSizeScale: 2,
       constellationLineWidth: 2.5,
@@ -177,8 +181,10 @@ describe("mergeConfig label and text size controls", () => {
     expect(merged.aircraftLabelTitlePx).toBe(20);
     expect(merged.aircraftLabelSubPx).toBe(14);
     expect(merged.skyLabelSizePx).toBe(14);
+    expect(merged.rangeRingLabelSizePx).toBe(12);
     expect(merged.compassLabelSizePx).toBe(22);
-    expect(merged.overlayLabelSizePx).toBe(16);
+    expect(merged.airportLabelSizePx).toBe(18);
+    expect(merged.hudTextSizePx).toBe(16);
     expect(merged.focusTextSizePx).toBe(44);
     expect(merged.starSizeScale).toBe(2);
     expect(merged.constellationLineWidth).toBe(2.5);

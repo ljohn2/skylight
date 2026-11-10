@@ -443,6 +443,8 @@ export interface Config {
   compassLabelSizePx: number;
   /** Font size for the airport code label at the runway centroid, px. */
   airportLabelSizePx: number;
+  /** Size multiplier for airport runway glyphs (1 = true geographic scale). */
+  runwaySizeScale: number;
   /** Font size for the on-screen HUD bar on the display, px. */
   hudTextSizePx: number;
   /** Font size for the primary flight readout in the Focus theme detail panel, px. */
@@ -567,6 +569,7 @@ export const DEFAULT_CONFIG: Config = {
   rangeRingLabelSizePx: 9,
   compassLabelSizePx: 12,
   airportLabelSizePx: 13,
+  runwaySizeScale: 1,
   hudTextSizePx: 12,
   focusTextSizePx: 34,
   showFields: {

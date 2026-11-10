@@ -706,14 +706,28 @@ export class Renderer {
     const rwyRgb: [number, number, number] = [150, 180, 220];
     {
       const ap = cfg.airport;
+      const scale = cfg.runwaySizeScale;
+      const projected = ap.runways.map((r) => ({
+        r,
+        a: this.toScreen(r.le, cfg, proj),
+        b: this.toScreen(r.he, cfg, proj),
+      }));
       let cx = 0;
       let cy = 0;
-      let n = 0;
-      for (const r of ap.runways) {
-        const a = this.toScreen(r.le, cfg, proj);
-        const b = this.toScreen(r.he, cfg, proj);
-        // True runway width in px, nudged up a touch so it stays legible.
-        const wpx = Math.max(2.5, r.widthFt * FT_TO_M * proj.pxPerM * 1.4);
+      const n = projected.length;
+      for (const { a, b } of projected) {
+        cx += (a.x + b.x) / 2;
+        cy += (a.y + b.y) / 2;
+      }
+      if (n) {
+        cx /= n;
+        cy /= n;
+      }
+      for (const { r, a: rawA, b: rawB } of projected) {
+        const a = { x: cx + (rawA.x - cx) * scale, y: cy + (rawA.y - cy) * scale };
+        const b = { x: cx + (rawB.x - cx) * scale, y: cy + (rawB.y - cy) * scale };
+        // True runway width in px, nudged up a touch so it stays legible, scaled by runwaySizeScale.
+        const wpx = Math.max(2.5, r.widthFt * FT_TO_M * proj.pxPerM * 1.4) * scale;
 
         ctx.save();
         ctx.lineCap = "butt";
@@ -726,22 +740,16 @@ export class Renderer {
         ctx.stroke();
         // Dashed centerline.
         ctx.strokeStyle = rgba([210, 226, 255], 0.22 * cfg.brightness);
-        ctx.lineWidth = 1;
-        ctx.setLineDash([6, 6]);
+        ctx.lineWidth = Math.max(0.5, scale);
+        ctx.setLineDash([6 * scale, 6 * scale]);
         ctx.beginPath();
         ctx.moveTo(a.x, a.y);
         ctx.lineTo(b.x, b.y);
         ctx.stroke();
         ctx.restore();
-
-        cx += (a.x + b.x) / 2;
-        cy += (a.y + b.y) / 2;
-        n++;
       }
       // Airport label at the runway centroid.
       if (n) {
-        cx /= n;
-        cy /= n;
         ctx.save();
         ctx.font = `300 ${cfg.airportLabelSizePx}px ${cfg.fonts.label}`;
         ctx.fillStyle = rgba(rwyRgb, 0.5 * cfg.brightness);

@@ -159,6 +159,7 @@ describe("mergeConfig label and text size controls", () => {
     expect(DEFAULT_CONFIG.rangeRingLabelSizePx).toBe(9);
     expect(DEFAULT_CONFIG.compassLabelSizePx).toBe(12);
     expect(DEFAULT_CONFIG.airportLabelSizePx).toBe(13);
+    expect(DEFAULT_CONFIG.runwaySizeScale).toBe(1);
     expect(DEFAULT_CONFIG.hudTextSizePx).toBe(12);
     expect(DEFAULT_CONFIG.focusTextSizePx).toBe(34);
     expect(DEFAULT_CONFIG.starSizeScale).toBe(1);
@@ -172,6 +173,7 @@ describe("mergeConfig label and text size controls", () => {
       rangeRingLabelSizePx: 12,
       compassLabelSizePx: 22,
       airportLabelSizePx: 18,
+      runwaySizeScale: 2.2,
       hudTextSizePx: 16,
       focusTextSizePx: 44,
       starSizeScale: 2,
@@ -184,6 +186,7 @@ describe("mergeConfig label and text size controls", () => {
     expect(merged.rangeRingLabelSizePx).toBe(12);
     expect(merged.compassLabelSizePx).toBe(22);
     expect(merged.airportLabelSizePx).toBe(18);
+    expect(merged.runwaySizeScale).toBe(2.2);
     expect(merged.hudTextSizePx).toBe(16);
     expect(merged.focusTextSizePx).toBe(44);
     expect(merged.starSizeScale).toBe(2);

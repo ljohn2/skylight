@@ -629,10 +629,16 @@ export function Control() {
             <Toggle value={cfg.showAirport} onChange={(v) => set({ showAirport: v })} />
           </Row>
           {cfg.showAirport && (
-            <Row label="Airport label size" hint="airport code on runways" indent={true}>
-              <Slider id="airportLabelSizePx" value={cfg.airportLabelSizePx} min={6} max={40} step={1} unit="px"
-                onChange={(v) => set({ airportLabelSizePx: v })} />
-            </Row>
+            <>
+              <Row label="Runway glyph size" indent={true}>
+                <Slider id="runwaySizeScale" value={cfg.runwaySizeScale} min={0.2} max={5} step={0.1} unit="×"
+                  onChange={(v) => set({ runwaySizeScale: v })} />
+              </Row>
+              <Row label="Airport label size" hint="airport code on runways" indent={true}>
+                <Slider id="airportLabelSizePx" value={cfg.airportLabelSizePx} min={6} max={40} step={1} unit="px"
+                  onChange={(v) => set({ airportLabelSizePx: v })} />
+              </Row>
+            </>
           )}
           <Row label="Highlight emergency">
             <Toggle value={cfg.highlightEmergency} onChange={(v) => set({ highlightEmergency: v })} />

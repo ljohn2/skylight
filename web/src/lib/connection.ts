@@ -1,13 +1,15 @@
 // Single auto-reconnecting WebSocket connection shared within a page.
 // Receives config / aircraft / status; sends config patches.
 
-import type {
-  Aircraft,
-  ClientMessage,
-  Config,
-  GroundAircraft,
-  ServerMessage,
-  SourceStatus,
+import {
+  DEFAULT_CONFIG,
+  mergeConfig,
+  type Aircraft,
+  type ClientMessage,
+  type Config,
+  type GroundAircraft,
+  type ServerMessage,
+  type SourceStatus,
 } from "@shared/index.js";
 
 export interface StreamState {
@@ -26,6 +28,8 @@ export class Connection {
   private ws: WebSocket | null = null;
   private listeners = new Set<Listener>();
   private reconnectTimer: ReturnType<typeof setTimeout> | null = null;
+  private buildCheckTimer: ReturnType<typeof setInterval> | null = null;
+  private lastBuildCheckAt = 0;
   private closed = false;
   private everConnected = false;
   private initialScriptSrc: string | null =
@@ -47,6 +51,9 @@ export class Connection {
   connect(): void {
     this.closed = false;
     this.open();
+    if (!this.buildCheckTimer && typeof window !== "undefined") {
+      this.buildCheckTimer = setInterval(() => void this.reloadIfBuildChanged(), 10_000);
+    }
   }
 
   private url(): string {
@@ -94,7 +101,8 @@ export class Connection {
     }
     switch (msg.type) {
       case "config":
-        this.update({ config: msg.config });
+        this.update({ config: mergeConfig(DEFAULT_CONFIG, msg.config) });
+        void this.reloadIfBuildChanged();
         break;
       case "aircraft":
         this.update({ now: msg.now, aircraft: msg.aircraft });
@@ -134,11 +142,14 @@ export class Connection {
 
   private async reloadIfBuildChanged(): Promise<void> {
     if (!this.initialScriptSrc || typeof window === "undefined") return;
+    const now = Date.now();
+    if (now - this.lastBuildCheckAt < 4000) return;
+    this.lastBuildCheckAt = now;
     try {
-      const res = await fetch(window.location.pathname, { cache: "no-store" });
+      const res = await fetch(`${window.location.pathname}?_t=${now}`, { cache: "no-store" });
       if (!res.ok) return;
       const html = await res.text();
-      if (!html.includes(this.initialScriptSrc)) {
+      if (html.includes('<script type="module"') && !html.includes(this.initialScriptSrc)) {
         window.location.reload();
       }
     } catch {
@@ -149,6 +160,10 @@ export class Connection {
   close(): void {
     this.closed = true;
     if (this.reconnectTimer) clearTimeout(this.reconnectTimer);
+    if (this.buildCheckTimer) {
+      clearInterval(this.buildCheckTimer);
+      this.buildCheckTimer = null;
+    }
     this.ws?.close();
   }
 }

@@ -55,13 +55,14 @@ export function Slider({
   onChange: (v: number) => void;
 }) {
   // Keep the handle under the pointer while dragging; parent value may lag after unit conversion.
+  const safeValue = Number.isFinite(value) ? value : min;
   const [active, setActive] = useState(false);
-  const [local, setLocal] = useState(value);
+  const [local, setLocal] = useState(safeValue);
   useEffect(() => {
-    if (!active) setLocal(value);
-  }, [value, active]);
+    if (!active) setLocal(safeValue);
+  }, [safeValue, active]);
 
-  const display = active ? local : value;
+  const display = active ? local : safeValue;
   const handleChange = (v: number) => {
     setLocal(v);
     onChange(v);

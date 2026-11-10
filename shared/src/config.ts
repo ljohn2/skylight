@@ -483,6 +483,12 @@ export interface Config {
   starMagLimit: number;
   /** Faintest star magnitude to label with its name (higher = more names). */
   starLabelMagLimit: number;
+  /** Size multiplier for star glyphs (1 = default magnitude-based size). */
+  starSizeScale: number;
+  /** Line width for constellation asterism lines, px. */
+  constellationLineWidth: number;
+  /** Size multiplier for planet glyphs (1 = default magnitude-based size). */
+  planetSizeScale: number;
   /** Offset the sky clock for testing/scrubbing, minutes (0 = live). */
   skyTimeOffsetMin: number;
 
@@ -587,6 +593,9 @@ export const DEFAULT_CONFIG: Config = {
   constellations: Object.fromEntries(CONSTELLATIONS.map((c) => [c.id, true])),
   starMagLimit: 2.6,
   starLabelMagLimit: 0.3,
+  starSizeScale: 1,
+  constellationLineWidth: 1,
+  planetSizeScale: 1,
   skyTimeOffsetMin: 0,
 
   showDestArc: true,

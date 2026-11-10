@@ -812,26 +812,28 @@ export class Renderer {
       for (const s of this.sky.stars) {
         if (s.id) pts.set(s.id, this.projectSky(s.az, s.alt, cfg, proj));
       }
-      ctx.save();
-      ctx.strokeStyle = `rgba(150,170,220,${0.14 * b})`;
-      ctx.lineWidth = 1;
-      for (const [a, c] of visibleAsterisms(cfg.constellations)) {
-        const pa = pts.get(a);
-        const pc = pts.get(c);
-        if (pa && pc) {
-          ctx.beginPath();
-          ctx.moveTo(pa.x, pa.y);
-          ctx.lineTo(pc.x, pc.y);
-          ctx.stroke();
+      if (cfg.constellationLineWidth > 0) {
+        ctx.save();
+        ctx.strokeStyle = `rgba(150,170,220,${0.14 * b})`;
+        ctx.lineWidth = cfg.constellationLineWidth;
+        for (const [a, c] of visibleAsterisms(cfg.constellations)) {
+          const pa = pts.get(a);
+          const pc = pts.get(c);
+          if (pa && pc) {
+            ctx.beginPath();
+            ctx.moveTo(pa.x, pa.y);
+            ctx.lineTo(pc.x, pc.y);
+            ctx.stroke();
+          }
         }
+        ctx.restore();
       }
-      ctx.restore();
 
       // Stars themselves, sized + twinkling by magnitude.
       for (const s of this.sky.stars) {
         const p = pts.get(s.id!)!;
         const mag = s.mag ?? 2;
-        const size = starDrawSize(mag);
+        const size = starDrawSize(mag) * cfg.starSizeScale;
         const tw = 0.78 + 0.22 * Math.sin(this.frameT * 3 + s.az);
         const a = clamp01((2.8 - mag) / 3) * b * tw;
         ctx.beginPath();
@@ -868,7 +870,7 @@ export class Renderer {
         const p = this.projectSky(pl.az, pl.alt, cfg, proj);
         const mag = pl.mag ?? 1;
         // Brighter planets (lower magnitude) read larger, with a soft glow.
-        const size = planetDrawSize(mag);
+        const size = planetDrawSize(mag) * cfg.planetSizeScale;
         const col = PLANET_COLORS[pl.name ?? ""] ?? "230,224,205";
         ctx.beginPath();
         ctx.arc(p.x, p.y, size, 0, Math.PI * 2);

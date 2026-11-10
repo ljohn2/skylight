@@ -613,6 +613,14 @@ export function Control() {
                 <Slider id="starLabelMagLimit" value={cfg.starLabelMagLimit} min={0} max={3} step={0.1}
                   onChange={(v) => set({ starLabelMagLimit: v })} />
               </Row>
+              <Row label="Star glyph size" indent={true}>
+                <Slider id="starSizeScale" value={cfg.starSizeScale} min={0.2} max={5} step={0.1} unit="×"
+                  onChange={(v) => set({ starSizeScale: v })} />
+              </Row>
+              <Row label="Constellation line weight" indent={true}>
+                <Slider id="constellationLineWidth" value={cfg.constellationLineWidth} min={0} max={6} step={0.2} unit="px"
+                  onChange={(v) => set({ constellationLineWidth: v })} />
+              </Row>
               {CONSTELLATIONS.map((c) => (
                 <Row key={c.id} label={c.name} indent={true}>
                   <Toggle value={cfg.constellations[c.id] !== false}
@@ -638,6 +646,12 @@ export function Control() {
           <Row label="Planets" hint="Venus, Jupiter, Mars…">
             <Toggle value={cfg.showPlanets} onChange={(v) => set({ showPlanets: v })} />
           </Row>
+          {cfg.showPlanets && (
+            <Row label="Planet glyph size" indent={true}>
+              <Slider id="planetSizeScale" value={cfg.planetSizeScale} min={0.2} max={5} step={0.1} unit="×"
+                onChange={(v) => set({ planetSizeScale: v })} />
+            </Row>
+          )}
           <Row label="Sky label size" hint="stars, planets, satellites">
             <Slider id="skyLabelSizePx" value={cfg.skyLabelSizePx} min={6} max={24} step={1} unit="px"
               onChange={(v) => set({ skyLabelSizePx: v })} />

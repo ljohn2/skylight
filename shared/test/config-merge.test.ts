@@ -158,6 +158,9 @@ describe("mergeConfig label and text size controls", () => {
     expect(DEFAULT_CONFIG.skyLabelSizePx).toBe(10);
     expect(DEFAULT_CONFIG.overlayLabelSizePx).toBe(12);
     expect(DEFAULT_CONFIG.focusTextSizePx).toBe(34);
+    expect(DEFAULT_CONFIG.starSizeScale).toBe(1);
+    expect(DEFAULT_CONFIG.constellationLineWidth).toBe(1);
+    expect(DEFAULT_CONFIG.planetSizeScale).toBe(1);
 
     const merged = mergeConfig(DEFAULT_CONFIG, {
       aircraftLabelTitlePx: 20,
@@ -165,11 +168,17 @@ describe("mergeConfig label and text size controls", () => {
       skyLabelSizePx: 14,
       overlayLabelSizePx: 16,
       focusTextSizePx: 44,
+      starSizeScale: 2,
+      constellationLineWidth: 2.5,
+      planetSizeScale: 1.8,
     });
     expect(merged.aircraftLabelTitlePx).toBe(20);
     expect(merged.aircraftLabelSubPx).toBe(14);
     expect(merged.skyLabelSizePx).toBe(14);
     expect(merged.overlayLabelSizePx).toBe(16);
     expect(merged.focusTextSizePx).toBe(44);
+    expect(merged.starSizeScale).toBe(2);
+    expect(merged.constellationLineWidth).toBe(2.5);
+    expect(merged.planetSizeScale).toBe(1.8);
   });
 });

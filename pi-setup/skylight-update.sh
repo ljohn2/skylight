@@ -30,6 +30,12 @@ echo "updating $(git rev-parse --short "$LOCAL") -> $(git rev-parse --short "$RE
 if pnpm install && pnpm build; then
   sudo systemctl restart skylight-server
   systemctl is-active --quiet skylight-tracker && sudo systemctl restart skylight-tracker || true
+  if [ -x "$HOME/.local/bin/skylight-kiosk.sh" ] && pgrep -f chrom >/dev/null 2>&1; then
+    export DISPLAY=:0 XDG_RUNTIME_DIR="/run/user/$(id -u)" WAYLAND_DISPLAY=wayland-1
+    pkill -f chrom 2>/dev/null || true
+    sleep 1
+    setsid "$HOME/.local/bin/skylight-kiosk.sh" </dev/null >"$HOME/kiosk.log" 2>&1 &
+  fi
   echo "updated to $(git rev-parse --short HEAD)"
 else
   echo "install/build failed; rolling back to $(git rev-parse --short "$LOCAL")"

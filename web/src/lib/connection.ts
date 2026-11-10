@@ -27,6 +27,11 @@ export class Connection {
   private listeners = new Set<Listener>();
   private reconnectTimer: ReturnType<typeof setTimeout> | null = null;
   private closed = false;
+  private everConnected = false;
+  private initialScriptSrc: string | null =
+    typeof document !== "undefined"
+      ? document.querySelector<HTMLScriptElement>('script[type="module"][src]')?.getAttribute("src") ?? null
+      : null;
 
   state: StreamState = {
     connected: false,
@@ -57,6 +62,10 @@ export class Connection {
       return;
     }
     this.ws.onopen = () => {
+      if (this.everConnected) {
+        void this.reloadIfBuildChanged();
+      }
+      this.everConnected = true;
       this.send({ type: "hello", role: this.role });
       this.update({ connected: true });
     };
@@ -121,6 +130,20 @@ export class Connection {
   private update(partial: Partial<StreamState>): void {
     this.state = { ...this.state, ...partial };
     for (const fn of this.listeners) fn(this.state);
+  }
+
+  private async reloadIfBuildChanged(): Promise<void> {
+    if (!this.initialScriptSrc || typeof window === "undefined") return;
+    try {
+      const res = await fetch(window.location.pathname, { cache: "no-store" });
+      if (!res.ok) return;
+      const html = await res.text();
+      if (!html.includes(this.initialScriptSrc)) {
+        window.location.reload();
+      }
+    } catch {
+      /* ignore */
+    }
   }
 
   close(): void {

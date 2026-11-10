@@ -34,6 +34,24 @@ function fmtUntil(ms: number): string {
 
 const SKY_TIME_MAX_MIN = 720; // the sky-time slider spans +/- 12h; jumps must fit it
 
+const API_PRESETS = [
+  {
+    label: "adsb.fi",
+    url: "https://opendata.adsb.fi/api/v3/lat/{lat}/lon/{lon}/dist/{r}",
+    note: "Default. Free, no key, 1 req/s.",
+  },
+  {
+    label: "adsb.lol",
+    url: "https://api.adsb.lol/v2/point/{lat}/{lon}/{r}",
+    note: "Free, no key. Tighter rate limit — may pause with 429.",
+  },
+  {
+    label: "airplanes.live",
+    url: "https://api.airplanes.live/v2/point/{lat}/{lon}/{r}",
+    note: "Feeders only — returns 403 otherwise.",
+  },
+] as const;
+
 const FIELD_LABELS: Record<keyof ShowFields, string> = {
   name: "Name",
   type: "Type",
@@ -346,6 +364,21 @@ export function Control() {
               }}
             />
           </Row>
+          <div className="chips">
+            {API_PRESETS.map((p) => (
+              <button
+                key={p.label}
+                type="button"
+                className={`chip ${cfg.apiUrl === p.url ? "on" : ""}`}
+                title={p.note}
+                onClick={() => {
+                  if (cfg.apiUrl !== p.url) set({ apiUrl: p.url });
+                }}
+              >
+                {p.label}
+              </button>
+            ))}
+          </div>
         </Section>
 
         <Section title="Units">

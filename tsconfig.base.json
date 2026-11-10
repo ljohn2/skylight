@@ -15,9 +15,9 @@
     "resolveJsonModule": true,
     "isolatedModules": true,
     "verbatimModuleSyntax": true,
-    "baseUrl": ".",
+    "noEmit": true,
     "paths": {
-      "@shared/*": ["shared/src/*"]
+      "@shared/*": ["./shared/src/*"]
     }
   }
 }

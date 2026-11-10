@@ -429,6 +429,10 @@ export function Control() {
             <Slider id="glyphSizePx" value={cfg.glyphSizePx} min={6} max={40} step={1} unit="px"
               onChange={(v) => set({ glyphSizePx: v })} />
           </Row>
+          <Row label="Focus panel text size" hint="bottom-left readout in Focus theme">
+            <Slider id="focusTextSizePx" value={cfg.focusTextSizePx} min={16} max={64} step={1} unit="px"
+              onChange={(v) => set({ focusTextSizePx: v })} />
+          </Row>
           <Row label="Trail length">
             <Slider id="trailSeconds" value={cfg.trailSeconds} min={0} max={120} step={5} unit="s"
               onChange={(v) => set({ trailSeconds: v })} />
@@ -454,6 +458,14 @@ export function Control() {
                 onChange={(v) => set({ nearestN: v })} />
             </Row>
           )}
+          <Row label="Aircraft title size">
+            <Slider id="aircraftLabelTitlePx" value={cfg.aircraftLabelTitlePx} min={8} max={32} step={1} unit="px"
+              onChange={(v) => set({ aircraftLabelTitlePx: v })} />
+          </Row>
+          <Row label="Aircraft detail size">
+            <Slider id="aircraftLabelSubPx" value={cfg.aircraftLabelSubPx} min={7} max={28} step={1} unit="px"
+              onChange={(v) => set({ aircraftLabelSubPx: v })} />
+          </Row>
 
           <div className="plane-preview">
             <h3 className="plane-preview-title">Plane detail</h3>
@@ -497,7 +509,16 @@ export function Control() {
                     }
 
                     return (
-                      <div key={`plane-preview-row-${index}`} className={`plane-preview-card-row plane-preview-card-row-${row?.kind}`}>
+                      <div
+                        key={`plane-preview-row-${index}`}
+                        className={`plane-preview-card-row plane-preview-card-row-${row?.kind}`}
+                        style={{
+                          fontSize:
+                            row?.kind === "title"
+                              ? `${cfg.aircraftLabelTitlePx}px`
+                              : `${cfg.aircraftLabelSubPx}px`,
+                        }}
+                      >
                         {text.map((t) => (<span key={t}>{t}</span>))}
                       </div>
                     );
@@ -568,6 +589,10 @@ export function Control() {
           <Row label="On-screen HUD (display)">
             <Toggle value={cfg.showHud} onChange={(v) => set({ showHud: v })} />
           </Row>
+          <Row label="Overlay label size" hint="compass, rings, airport, HUD">
+            <Slider id="overlayLabelSizePx" value={cfg.overlayLabelSizePx} min={6} max={28} step={1} unit="px"
+              onChange={(v) => set({ overlayLabelSizePx: v })} />
+          </Row>
         </Section>
 
         <Section title="Sky">
@@ -612,6 +637,10 @@ export function Control() {
           )}
           <Row label="Planets" hint="Venus, Jupiter, Mars…">
             <Toggle value={cfg.showPlanets} onChange={(v) => set({ showPlanets: v })} />
+          </Row>
+          <Row label="Sky label size" hint="stars, planets, satellites">
+            <Slider id="skyLabelSizePx" value={cfg.skyLabelSizePx} min={6} max={24} step={1} unit="px"
+              onChange={(v) => set({ skyLabelSizePx: v })} />
           </Row>
           <Row label="Sky events" hint="look up: moon, eclipses, meteors">
             <Toggle value={cfg.showSkyEvents} onChange={(v) => set({ showSkyEvents: v })} />

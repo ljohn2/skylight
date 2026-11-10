@@ -431,6 +431,16 @@ export interface Config {
   // --- labels ---
   labelDensity: LabelDensity;
   nearestN: number;
+  /** Font size for the primary title line on aircraft labels, px. */
+  aircraftLabelTitlePx: number;
+  /** Font size for detail/sub-lines on aircraft labels, px. */
+  aircraftLabelSubPx: number;
+  /** Font size for star, planet, and satellite labels, px. */
+  skyLabelSizePx: number;
+  /** Font size for compass, range rings, airport code, and HUD overlays, px. */
+  overlayLabelSizePx: number;
+  /** Font size for the primary flight readout in the Focus theme detail panel, px. */
+  focusTextSizePx: number;
   showFields: ShowFields;
   nameDisplay: NameDisplay;
   locationDisplay: LocationDisplay;
@@ -539,6 +549,11 @@ export const DEFAULT_CONFIG: Config = {
 
   labelDensity: "all",
   nearestN: 5,
+  aircraftLabelTitlePx: 14,
+  aircraftLabelSubPx: 11,
+  skyLabelSizePx: 10,
+  overlayLabelSizePx: 12,
+  focusTextSizePx: 34,
   showFields: {
     name: true,
     type: true,

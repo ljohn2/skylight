@@ -419,7 +419,7 @@ export function Display() {
       )}
 
       {cfg?.showHud && (
-        <div className="hud">
+        <div className="hud" style={{ fontSize: cfg.overlayLabelSizePx }}>
           <div className={`hud-dot ${state.connected ? "ok" : "bad"}`} />
           <span>
             {state.status?.source ?? "—"} · {state.aircraft.length} ac ·{" "}

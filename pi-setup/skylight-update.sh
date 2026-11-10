@@ -4,13 +4,13 @@
 # server. Config and data are never touched. A failed build is rolled back to
 # the previous commit so the ceiling keeps working.
 #
-#   SKYLIGHT_BRANCH   branch to follow (default release)
+#   SKYLIGHT_BRANCH   branch to follow (default main)
 #   APPDIR            checkout (default ~/skylight)
 # Turn it off:  sudo systemctl disable --now skylight-update.timer
 set -euo pipefail
 
 APPDIR="${APPDIR:-$HOME/skylight}"
-BRANCH="${SKYLIGHT_BRANCH:-release}"
+BRANCH="${SKYLIGHT_BRANCH:-main}"
 cd "$APPDIR"
 [ -d .git ] || { echo "not a git checkout; nothing to update"; exit 0; }
 export CI=true COREPACK_ENABLE_DOWNLOAD_PROMPT=0

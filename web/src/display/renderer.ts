@@ -640,7 +640,8 @@ export class Renderer {
           ctx.stroke();
         }
         ctx.setLineDash([]);
-        ctx.font = `300 9px ${cfg.fonts.mono}`;
+        const ringFontPx = Math.max(6, Math.round(cfg.overlayLabelSizePx * 0.75));
+        ctx.font = `300 ${ringFontPx}px ${cfg.fonts.mono}`;
         ctx.fillStyle = rgba(hexToRgb(cfg.palette.text), 0.22 * cfg.brightness);
         ctx.textAlign = "left";
         ctx.textBaseline = "middle";
@@ -670,7 +671,7 @@ export class Renderer {
 
     if (cfg.compass) {
       ctx.save();
-      ctx.font = `300 12px ${cfg.fonts.label}`;
+      ctx.font = `300 ${cfg.overlayLabelSizePx}px ${cfg.fonts.label}`;
       ctx.fillStyle = rgba(hexToRgb(cfg.palette.text), 0.32 * cfg.brightness);
       ctx.textAlign = "center";
       ctx.textBaseline = "middle";
@@ -742,8 +743,9 @@ export class Renderer {
       if (n) {
         cx /= n;
         cy /= n;
+        const apFontPx = Math.round(cfg.overlayLabelSizePx * (13 / 12));
         ctx.save();
-        ctx.font = `300 13px ${cfg.fonts.label}`;
+        ctx.font = `300 ${apFontPx}px ${cfg.fonts.label}`;
         ctx.fillStyle = rgba(rwyRgb, 0.5 * cfg.brightness);
         ctx.textAlign = "center";
         ctx.textBaseline = "middle";
@@ -999,7 +1001,7 @@ export class Renderer {
     const ctx = this.ctx;
     this.withLabelRotation(cfg, p.x, p.y, () => {
       ctx.save();
-      ctx.font = `300 10px ${cfg.fonts.label}`;
+      ctx.font = `300 ${cfg.skyLabelSizePx}px ${cfg.fonts.label}`;
       ctx.fillStyle = color;
       ctx.globalAlpha = alpha;
       ctx.textAlign = align;
@@ -1022,7 +1024,8 @@ export class Renderer {
 
   private measureSkyLabel(text: string, cfg: Config): { w: number; h: number } {
     const ctx = this.ctx;
-    ctx.font = `300 10px ${cfg.fonts.label}`;
+    const fontSize = cfg.skyLabelSizePx;
+    ctx.font = `300 ${fontSize}px ${cfg.fonts.label}`;
     try {
       ctx.letterSpacing = "1px";
     } catch {
@@ -1034,7 +1037,7 @@ export class Renderer {
     } catch {
       /* noop */
     }
-    return { w: w + 2, h: 12 };
+    return { w: w + 2, h: Math.round(fontSize * 1.2) };
   }
 
   private skyLabelBox(
@@ -1260,25 +1263,34 @@ export class Renderer {
   private measureLabel(
     cfg: Config,
     lines: { text: string; kind: "title" | "sub" }[],
-  ): { w: number; lh: number; h: number } {
+  ): { w: number; lh: number; titleLh: number; h: number } {
     const ctx = this.ctx;
-    const lh = 16;
+    const titlePx = cfg.aircraftLabelTitlePx;
+    const subPx = cfg.aircraftLabelSubPx;
+    const lh = Math.round(subPx * 1.45);
+    const titleLh = Math.max(lh + 2, Math.round(titlePx * 1.28));
     let w = 0;
-    for (const ln of lines) {
-      ctx.font = ln.kind === "title" ? `500 14px ${cfg.fonts.label}` : `400 11px ${cfg.fonts.label}`;
+    let h = 0;
+    for (let i = 0; i < lines.length; i++) {
+      const ln = lines[i];
+      ctx.font =
+        ln.kind === "title"
+          ? `500 ${titlePx}px ${cfg.fonts.label}`
+          : `400 ${subPx}px ${cfg.fonts.label}`;
       try {
         ctx.letterSpacing = ln.kind === "title" ? "1.5px" : "0.5px";
       } catch {
         /* noop */
       }
       w = Math.max(w, ctx.measureText(ln.text).width);
+      h += i > 0 && lines[i - 1].kind === "title" ? titleLh : lh;
     }
     try {
       ctx.letterSpacing = "0px";
     } catch {
       /* noop */
     }
-    return { w: w + 2, lh, h: lines.length * lh };
+    return { w: w + 2, lh, titleLh, h };
   }
 
   private collides(
@@ -1306,7 +1318,7 @@ export class Renderer {
     const a = v.alpha * strength;
     if (a < 0.04) return;
 
-    const { w, lh, h } = this.measureLabel(cfg, lines);
+    const { w, lh, titleLh, h } = this.measureLabel(cfg, lines);
 
     const gap = cfg.glyphSizePx * 0.7 + 9;
     const onScreen = (b: { x: number; y: number; w: number; h: number }) =>
@@ -1364,7 +1376,7 @@ export class Renderer {
       let lastLineKind;
       for (const ln of lines) {
         if (ln.kind === "title") {
-          ctx.font = `500 14px ${cfg.fonts.label}`;
+          ctx.font = `500 ${cfg.aircraftLabelTitlePx}px ${cfg.fonts.label}`;
           ctx.fillStyle = rgba([245, 247, 255], a);
           try {
             ctx.letterSpacing = "1.5px";
@@ -1372,7 +1384,7 @@ export class Renderer {
             /* noop */
           }
         } else {
-          ctx.font = `400 11px ${cfg.fonts.label}`;
+          ctx.font = `400 ${cfg.aircraftLabelSubPx}px ${cfg.fonts.label}`;
           ctx.fillStyle = rgba(hexToRgb(cfg.palette.text), 0.82 * a);
           try {
             ctx.letterSpacing = "0.5px";
@@ -1382,7 +1394,7 @@ export class Renderer {
         }
 
         // after drawing the title we need a to draw further down for the following line (due to the larger font size of the title)
-        y += lastLineKind === "title" ? lh + 2 : lh;
+        y += lastLineKind === "title" ? titleLh : lh;
 
         ctx.strokeText(ln.text, box.x, y);
         ctx.fillText(ln.text, box.x, y);
@@ -1402,7 +1414,7 @@ export class Renderer {
   private drawDetailPanel(cfg: Config, v: Visible): void {
     const ac = v.tr.ac;
     const x = 40;
-    const y = this.h - 120;
+    const y = this.h - Math.max(120, Math.round(cfg.focusTextSizePx * 3.5));
     this.withLabelRotation(cfg, x, y, () => this.drawDetailPanelText(cfg, v, ac, x, y));
   }
 
@@ -1423,8 +1435,12 @@ export class Renderer {
       /* noop */
     }
 
+    const titlePx = cfg.focusTextSizePx;
+    const detailPx = Math.max(9, Math.round(titlePx * (15 / 34)));
+    const detailOffset = Math.round(titlePx * (26 / 34));
+
     const flightText = ac.flight ?? ac.hex.toUpperCase();
-    ctx.font = `300 34px ${cfg.fonts.label}`;
+    ctx.font = `300 ${titlePx}px ${cfg.fonts.label}`;
     ctx.fillStyle = rgba([245, 247, 255], v.alpha);
     ctx.strokeText(flightText, x, y);
     ctx.fillText(flightText, x, y);
@@ -1434,7 +1450,7 @@ export class Renderer {
       /* noop */
     }
 
-    ctx.font = `400 15px ${cfg.fonts.label}`;
+    ctx.font = `400 ${detailPx}px ${cfg.fonts.label}`;
     ctx.fillStyle = rgba(hexToRgb(cfg.palette.text), 0.85 * v.alpha);
     const dpAlt = ac.altBaro ?? ac.altGeom;
     const bits = [
@@ -1446,8 +1462,8 @@ export class Renderer {
     ].filter(Boolean);
 
     const detailText = bits.join("    ·    ");
-    ctx.strokeText(detailText, x, y + 26);
-    ctx.fillText(detailText, x, y + 26);
+    ctx.strokeText(detailText, x, y + detailOffset);
+    ctx.fillText(detailText, x, y + detailOffset);
     try {
       ctx.letterSpacing = "0px";
     } catch {

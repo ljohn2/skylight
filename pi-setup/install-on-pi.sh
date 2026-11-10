@@ -181,7 +181,7 @@ if [ -d "$APPDIR/.git" ] && [ "${AUTO_UPDATE:-1}" != "0" ]; then
   sudo cp "$APPDIR/pi-setup/skylight-update.timer" /etc/systemd/system/skylight-update.timer
   sudo systemctl daemon-reload
   sudo systemctl enable --now skylight-update.timer
-  echo "   enabled (follows the ${SKYLIGHT_BRANCH:-release} branch nightly)"
+  echo "   enabled (follows the ${SKYLIGHT_BRANCH:-main} branch nightly)"
 else
   echo "   skipped (not a git checkout, or AUTO_UPDATE=0)"
 fi

@@ -150,3 +150,26 @@ describe("mergeConfig constellation visibility (#47)", () => {
     expect(visibleAsterisms(allDisabled)).toEqual([]);
   });
 });
+
+describe("mergeConfig label and text size controls", () => {
+  it("provides default label and text sizes and preserves patched values", () => {
+    expect(DEFAULT_CONFIG.aircraftLabelTitlePx).toBe(14);
+    expect(DEFAULT_CONFIG.aircraftLabelSubPx).toBe(11);
+    expect(DEFAULT_CONFIG.skyLabelSizePx).toBe(10);
+    expect(DEFAULT_CONFIG.overlayLabelSizePx).toBe(12);
+    expect(DEFAULT_CONFIG.focusTextSizePx).toBe(34);
+
+    const merged = mergeConfig(DEFAULT_CONFIG, {
+      aircraftLabelTitlePx: 20,
+      aircraftLabelSubPx: 14,
+      skyLabelSizePx: 14,
+      overlayLabelSizePx: 16,
+      focusTextSizePx: 44,
+    });
+    expect(merged.aircraftLabelTitlePx).toBe(20);
+    expect(merged.aircraftLabelSubPx).toBe(14);
+    expect(merged.skyLabelSizePx).toBe(14);
+    expect(merged.overlayLabelSizePx).toBe(16);
+    expect(merged.focusTextSizePx).toBe(44);
+  });
+});

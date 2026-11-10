@@ -437,7 +437,9 @@ export interface Config {
   aircraftLabelSubPx: number;
   /** Font size for star, planet, and satellite labels, px. */
   skyLabelSizePx: number;
-  /** Font size for range ring elevation labels, px. */
+  /** Line width for range rings, px. */
+  rangeRingLineWidth: number;
+  /** Font size for range ring distance/elevation labels, px. */
   rangeRingLabelSizePx: number;
   /** Font size for compass cardinal labels (N, E, S, W), px. */
   compassLabelSizePx: number;
@@ -566,6 +568,7 @@ export const DEFAULT_CONFIG: Config = {
   aircraftLabelTitlePx: 14,
   aircraftLabelSubPx: 11,
   skyLabelSizePx: 10,
+  rangeRingLineWidth: 1,
   rangeRingLabelSizePx: 9,
   compassLabelSizePx: 12,
   airportLabelSizePx: 13,

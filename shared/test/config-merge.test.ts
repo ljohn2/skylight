@@ -156,6 +156,7 @@ describe("mergeConfig label and text size controls", () => {
     expect(DEFAULT_CONFIG.aircraftLabelTitlePx).toBe(14);
     expect(DEFAULT_CONFIG.aircraftLabelSubPx).toBe(11);
     expect(DEFAULT_CONFIG.skyLabelSizePx).toBe(10);
+    expect(DEFAULT_CONFIG.rangeRingLineWidth).toBe(1);
     expect(DEFAULT_CONFIG.rangeRingLabelSizePx).toBe(9);
     expect(DEFAULT_CONFIG.compassLabelSizePx).toBe(12);
     expect(DEFAULT_CONFIG.airportLabelSizePx).toBe(13);
@@ -170,6 +171,7 @@ describe("mergeConfig label and text size controls", () => {
       aircraftLabelTitlePx: 20,
       aircraftLabelSubPx: 14,
       skyLabelSizePx: 14,
+      rangeRingLineWidth: 2.4,
       rangeRingLabelSizePx: 12,
       compassLabelSizePx: 22,
       airportLabelSizePx: 18,
@@ -183,6 +185,7 @@ describe("mergeConfig label and text size controls", () => {
     expect(merged.aircraftLabelTitlePx).toBe(20);
     expect(merged.aircraftLabelSubPx).toBe(14);
     expect(merged.skyLabelSizePx).toBe(14);
+    expect(merged.rangeRingLineWidth).toBe(2.4);
     expect(merged.rangeRingLabelSizePx).toBe(12);
     expect(merged.compassLabelSizePx).toBe(22);
     expect(merged.airportLabelSizePx).toBe(18);

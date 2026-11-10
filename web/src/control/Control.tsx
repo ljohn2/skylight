@@ -611,10 +611,16 @@ export function Control() {
             <Toggle value={cfg.rangeRings} onChange={(v) => set({ rangeRings: v })} />
           </Row>
           {cfg.rangeRings && (
-            <Row label="Range ring label size" hint="elevation degree labels" indent={true}>
-              <Slider id="rangeRingLabelSizePx" value={cfg.rangeRingLabelSizePx} min={6} max={28} step={1} unit="px"
-                onChange={(v) => set({ rangeRingLabelSizePx: v })} />
-            </Row>
+            <>
+              <Row label="Range ring line weight" indent={true}>
+                <Slider id="rangeRingLineWidth" value={cfg.rangeRingLineWidth} min={0} max={6} step={0.2} unit="px"
+                  onChange={(v) => set({ rangeRingLineWidth: v })} />
+              </Row>
+              <Row label="Range ring label size" hint="distance / elevation labels" indent={true}>
+                <Slider id="rangeRingLabelSizePx" value={cfg.rangeRingLabelSizePx} min={6} max={28} step={1} unit="px"
+                  onChange={(v) => set({ rangeRingLabelSizePx: v })} />
+              </Row>
+            </>
           )}
           <Row label="Compass">
             <Toggle value={cfg.compass} onChange={(v) => set({ compass: v })} />

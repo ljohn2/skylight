@@ -628,41 +628,61 @@ export class Renderer {
 
     if (cfg.rangeRings) {
       ctx.save();
+      const ringLw = cfg.rangeRingLineWidth;
       if (skyMode) {
         // Elevation contours on the look-up dome (15° … 75° above horizon).
-        for (const elev of [15, 30, 45, 60, 75]) {
-          const r = (1 - elev / 90) * hM * proj.pxPerM;
-          ctx.beginPath();
-          ctx.arc(cx, cy, r, 0, Math.PI * 2);
-          ctx.strokeStyle = rgba(hexToRgb(cfg.palette.grid), (0.22 + elev / 300) * cfg.brightness);
-          ctx.lineWidth = 1;
-          ctx.setLineDash(elev === 45 ? [] : [2, 8]);
-          ctx.stroke();
+        if (ringLw > 0) {
+          for (const elev of [15, 30, 45, 60, 75]) {
+            const r = (1 - elev / 90) * hM * proj.pxPerM;
+            ctx.beginPath();
+            ctx.arc(cx, cy, r, 0, Math.PI * 2);
+            ctx.strokeStyle = rgba(hexToRgb(cfg.palette.grid), (0.22 + elev / 300) * cfg.brightness);
+            ctx.lineWidth = ringLw;
+            ctx.setLineDash(elev === 45 ? [] : [2 * ringLw, 8]);
+            ctx.stroke();
+          }
+          ctx.setLineDash([]);
         }
-        ctx.setLineDash([]);
         ctx.font = `300 ${cfg.rangeRingLabelSizePx}px ${cfg.fonts.mono}`;
-        ctx.fillStyle = rgba(hexToRgb(cfg.palette.text), 0.22 * cfg.brightness);
+        ctx.fillStyle = rgba(hexToRgb(cfg.palette.text), 0.32 * cfg.brightness);
         ctx.textAlign = "left";
         ctx.textBaseline = "middle";
         for (const elev of [30, 60]) {
           const r = (1 - elev / 90) * hM * proj.pxPerM;
-          ctx.fillText(`${elev}°`, cx + r + 4, cy);
+          const lx = cx + r + 4;
+          this.withLabelRotation(cfg, lx, cy, () => ctx.fillText(`${elev}°`, lx, cy));
         }
       } else {
-        for (let step = 1; step <= Math.floor(convertDistance(cfg.radiusMiles, cfg.distanceUnit)); step++) {
-          const r = step * (cfg.distanceUnit === "mi" ? MI_TO_M : KM_TO_M) * proj.pxPerM;
-          ctx.beginPath();
-          ctx.arc(cx, cy, r, 0, Math.PI * 2);
-          ctx.strokeStyle = rgba(hexToRgb(cfg.palette.grid), 0.5 * cfg.brightness);
-          ctx.lineWidth = 1;
-          ctx.setLineDash([2, 7]);
-          ctx.stroke();
+        const maxStep = Math.floor(convertDistance(cfg.radiusMiles, cfg.distanceUnit));
+        const unitM = cfg.distanceUnit === "mi" ? MI_TO_M : KM_TO_M;
+        if (ringLw > 0) {
+          for (let step = 1; step <= maxStep; step++) {
+            const r = step * unitM * proj.pxPerM;
+            ctx.beginPath();
+            ctx.arc(cx, cy, r, 0, Math.PI * 2);
+            ctx.strokeStyle = rgba(hexToRgb(cfg.palette.grid), 0.5 * cfg.brightness);
+            ctx.lineWidth = ringLw;
+            ctx.setLineDash([2 * ringLw, 7]);
+            ctx.stroke();
+          }
+          ctx.setLineDash([]);
         }
-        ctx.setLineDash([]);
+        const labelInterval = Math.max(1, Math.ceil(maxStep / 5));
+        ctx.font = `300 ${cfg.rangeRingLabelSizePx}px ${cfg.fonts.mono}`;
+        ctx.fillStyle = rgba(hexToRgb(cfg.palette.text), 0.32 * cfg.brightness);
+        ctx.textAlign = "left";
+        ctx.textBaseline = "middle";
+        for (let step = labelInterval; step <= maxStep; step += labelInterval) {
+          const r = step * unitM * proj.pxPerM;
+          const lx = cx + r + 4;
+          this.withLabelRotation(cfg, lx, cy, () =>
+            ctx.fillText(`${step}${cfg.distanceUnit}`, lx, cy),
+          );
+        }
       }
       // Zenith mark.
       ctx.beginPath();
-      ctx.arc(cx, cy, 2, 0, Math.PI * 2);
+      ctx.arc(cx, cy, Math.max(1.5, ringLw * 1.5), 0, Math.PI * 2);
       ctx.fillStyle = rgba(hexToRgb(cfg.palette.grid), 0.7 * cfg.brightness);
       ctx.fill();
       ctx.restore();
